@@ -1,10 +1,10 @@
-const classItemCart = '.cart__items';
+const classItemCart = '.cart__items'; // isso aqui é pra evitar problema de Lint.
 function eraseAll() { // requisito 6
   const removeButton = document.getElementsByClassName('empty-cart')[0];// botão que esvazia o carrinho
   removeButton.addEventListener('click', () => { // fazer essa HOF aqui no addEventListener me ajudou a resolver problema de lint. Fazendo assim, eu chamo a função eraseAll usando o addEventListener dentro da própria eraseAll. 
     document.getElementsByClassName('cart__items')[0].innerText = ''; // esse do cart_items é a OL.
     
-      const ol = document.querySelector(classItemCart);
+      const ol = document.querySelector(classItemCart); // assim eu alcanço o OL usando a const que eu defini na linha 1, ao invés de usar o .cart_items nesse querySelector.
    localStorage.setItem('produto', ol.innerHTML);
     });
 }
@@ -16,7 +16,7 @@ function eraseAll() { // requisito 6
     document.querySelector(classItemCart).innerHTML = armazenar; // usando o innerHTML que manteve os números na lista. Usando innerText esses números sumiam.
     console.log(armazenar);
   }
-function cartItemClickListener(event) {
+function cartItemClickListener(event) { // 
   event.target.remove();// o event.target alcança o elemento que começou o evento(Nesse caso, seria o LI). Então ao clicar em LI, eu chamo essa função e esta função remove este LI.
    const ol = document.querySelector(classItemCart);
     localStorage.setItem('produto', ol.innerHTML);
@@ -76,7 +76,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+// o requisito 7 eu fiz com a ajuda do meu colega Vinicius Bodra. Link do PR dele: https://github.com/tryber/sd-010-b-project-shopping-cart/pull/118/commits/77c597dc4bcbd733bf87a272a160be9d9ef8394c
 const myFetch = () => { // essas coisas é melhor botar no final do código pra dar menos problema com o Lint.
+  const p = document.createElement('p');
+  p.innerHTML = 'loading...';
+  p.className = 'loading';
+  document.body.appendChild(p);
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => {
     response.json()
@@ -89,7 +94,7 @@ const myFetch = () => { // essas coisas é melhor botar no final do código pra 
        createProductItemElement(element); // o parâmetro aqui tá diferente da mesma função lá em cima, mas é pq esse "element" já engloba todas aqueles 3 parâmetros lá de cima. Cada "element"(ou produto) tem aquelas 3 coisas.
         // pra cada elemento(ou produto) dentro do RESULTS, eu CHAMO ESSA FUNÇÃO createProduct(que já foi personalizada lá em cima). Ou seja, isso é pra que, enquanto eu rodo os produtos(dentro do result), eu faça aparecer na página todos os 50 produtos com sua personalização.
         });
-    });
+    }); document.body.removeChild(p);
   });
 };
 window.onload = function onload() { 
