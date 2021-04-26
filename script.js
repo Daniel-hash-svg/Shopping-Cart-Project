@@ -1,14 +1,16 @@
 const classItemCart = '.cart__items'; // isso aqui é pra evitar problema de Lint.
 // requisito 5 eu tive a ajuda do meu colega Alexandre Damasceno. Link do PR dele: https://github.com/tryber/sd-010-b-project-shopping-cart/blob/d5e394a69f6aac16e9e4d70963e8d3177fc0e4ce/script.js
 function soma() { // é pro requisito 5
-  const span = document.querySelector('.total-price'); 
-  const li = document.querySelectorAll('.cart__item');
+  const span = document.querySelector('.total-price'); // criei um span no HTML
+  const li = document.querySelectorAll('.cart__item'); // nesse caso, a const li representa o conjunto de todas as LI's da OL.
+  // o querySelectorAll vai pegar o conjunto de cada LI. Cada LI tem a class cart_item(isso já veio definido pela função createCartItemElement).
   let sum = 0;
-  for (let i = 0; i < li.length; i += 1) {
-    const valor = li[i].innerText.substring(li[i].innerText.indexOf('$') + 1);
-    sum += parseFloat(valor);
+  for (let i = 0; i < li.length; i += 1) { // vou navegar por todas as LI's.
+    const valor = li[i].innerText.substring(li[i].innerText.indexOf('$') + 1); // isso eu faço pra ter APENAS O VALOR. Lembre-se que a LI tem várias informações(Nome e SKU). A substring  vai buscar o índice onde tem o ('$'). Aí esse $ vira uma referência. Aí usa esse +1 depois pra dizer que eu quero o retorno a partir do primeiro depois do $ Então só o preço será retornado(o $ não será retornado).
+    sum += parseFloat(valor); // aí assim vai atualizar esse sum a cada que vc clica no botão de add ao carrinho e adiciona um LI naquela OL. 
+    // o parseFloat é IMPORTANTÍSSIMO. O parseFloat trabalha com números quebrados e também transforma strings em Numbers. Se não usar o parseFloat, a const valor vai ficar em string, e aí vai CONCATENAR os números AO INVÉS DE SOMAR. Por isso PRECISA usar o parseFloat, que converte em Number e garanta que os números sejam somados, ao invés de concatenados.
   }
-  span.innerHTML = Math.round(sum * 100) / 100;
+  span.innerHTML = `Preço Total: $${Math.round(sum * 100) / 100}`; // aqui eu coloco o preço total e um $ por meio de template literals
 }
 
 function eraseAll() { // requisito 6
@@ -34,7 +36,11 @@ function cartItemClickListener(event) { // essa vem de um Click também.
     const armazenar = localStorage.getItem('produto');
     
      document.querySelector(classItemCart).innerHTML = armazenar; // usando o innerHTML que manteve os números na lista. Usando innerText esses números sumiam.
+     document.querySelectorAll('.cart__item').forEach((li) => {
+     li.addEventListener('click', cartItemClickListener); // Quando eu clicar no li, chamo a função que apaga a li(só depois que dou F5 na página).
+     }); // ISSO AQUI É MT IMPORTANTE PRA APAGAR OS LI DEPOIS QUE CLICO NELE DEPOIS QUE DOU F5 NA PÁGINA
     console.log(armazenar);
+    soma(); // CHAMAR ESSA FUNÇAO AQUI TAMBÉM É MT IMPORTANTE PORQUE FAZ COM QUE, DEPOIS QUE DOU F5 NA PÁGINA,  O PREÇO TOTAL CONTINUA APARECENDO DE BOA
    }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
